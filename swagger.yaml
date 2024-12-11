@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  title: API de réservation de terrain de badminton
+  version: 1.0.0
+  description: API permettant de réserver des terrains de badminton
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /availableSlots:
+    get:
+      summary: Récupère les créneaux disponibles pour un terrain et une date donnés
+      parameters:
+        - name: date
+          in: query
+          description: La date pour laquelle vérifier les créneaux disponibles
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: terrain
+          in: query
+          description: Le nom du terrain pour vérifier sa disponibilité
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des créneaux disponibles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  terrain:
+                    type: string
+                  date:
+                    type: string
+                    format: date
+                  availableSlots:
+                    type: array
+                    items:
+                      type: string
+                    description: Liste des créneaux horaires disponibles
+        '400':
+          description: Paramètres manquants
+        '404':
+          description: Terrain non trouvé
+        '500':
+          description: Erreur interne du serveur
+
+  /reservations:
+    post:
+      summary: Crée une réservation pour un terrain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                schedule:
+                  type: string
+                terrain:
+                  type: string
+                name:
+                  type: string
+      responses:
+        '201':
+          description: Réservation créée avec succès
+        '400':
+          description: Paramètres manquants ou créneau déjà réservé
+        '404':
+          description: Terrain non trouvé
+        '500':
+          description: Erreur interne du serveur
+
+    delete:
+      summary: Annule une réservation existante
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                schedule:
+                  type: string
+                terrain:
+                  type: string
+      responses:
+        '200':
+          description: Réservation annulée
+        '400':
+          description: Paramètres manquants
+        '404':
+          description: Réservation non trouvée
+        '500':
+          description: Erreur interne du serveur
+
+  /terrain/availability:
+    post:
+      summary: Met un terrain temporairement indisponible
+      description: Cette méthode permet de rendre un terrain indisponible pour une période donnée. Réservée aux administrateurs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pseudo:
+                  type: string
+                password:
+                  type: string
+                terrain:
+                  type: string
+                isAvailable:
+                  type: boolean
+      responses:
+        '200':
+          description: Terrain marqué comme indisponible
+        '400':
+          description: Terrain, dateDebut et dateFin sont requis
+        '404':
+          description: Terrain non trouvé
+        '500':
+          description: Erreur interne du serveur
+
+components:
+  schemas:
+    Terrain:
+      type: object
+      properties:
+        name:
+          type: string
+    Reservation:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        time:
+          type: string
+        pseudo:
+          type: string
+        terrainId:
+          type: integer
