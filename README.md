@@ -109,6 +109,7 @@ Le service est sécurisé en utilisant les méthodes suivantes :
 - Les créneaux horaires sont au format `HH:MM`
 - Les terrains sont identifiés par des lettres majuscules (`A`, `B`, `C`, `D`)
 - J'ai utilisé docker desktop pour lancer le serveur PostgreSQL
+- J'ai pris la liberté de changer 'time' par 'schedule' pour plus de clarté
 
 ## Références
 
